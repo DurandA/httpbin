@@ -419,10 +419,15 @@ def view_post():
       - HTTP Methods
     produces:
       - application/json
+      - text/html
     responses:
       200:
         description: The request's POST parameters.
     """
+
+    headers = get_headers()
+    if "accept" in headers and "text/html" in headers["accept"].lower():
+        return render_template("forms-data.html", form=dict(request.form))
 
     return jsonify(
         get_dict("url", "args", "form", "data", "origin", "headers", "files", "json")
