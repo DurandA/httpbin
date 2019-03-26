@@ -14,6 +14,7 @@ import random
 import time
 import uuid
 import argparse
+from collections import OrderedDict
 
 from flask import (
     Flask,
@@ -427,7 +428,8 @@ def view_post():
 
     headers = get_headers()
     if "accept" in headers and "text/html" in headers["accept"].lower():
-        return render_template("forms-data.html", form=dict(request.form))
+        form_data = [(k, request.form.to_dict(flat=False)[k]) for k in sorted(request.form.keys())]
+        return render_template("forms-data.html", form=OrderedDict(form_data))
 
     return jsonify(
         get_dict("url", "args", "form", "data", "origin", "headers", "files", "json")
